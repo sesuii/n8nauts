@@ -1,0 +1,766 @@
+{
+  "name": "Automate_WordPress_Blog",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {
+          "reset": "={{ $prevNode == 'Split Out' }}"
+        }
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -848,
+        80
+      ],
+      "id": "a754ef7a-093d-437c-987b-b34a73569098",
+      "name": "Loop Over Items",
+      "retryOnFail": false,
+      "executeOnce": true
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "13M7HBsbRMeclEzaawSrd5znPXBL3VrvaPebIvgX_tAk",
+          "mode": "list",
+          "cachedResultName": "wordpress",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/13M7HBsbRMeclEzaawSrd5znPXBL3VrvaPebIvgX_tAk/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1210533135,
+          "mode": "list",
+          "cachedResultName": "sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/13M7HBsbRMeclEzaawSrd5znPXBL3VrvaPebIvgX_tAk/edit#gid=1210533135"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "status",
+              "lookupValue": "todo"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        -2040,
+        80
+      ],
+      "id": "28e2866c-4fa1-45fc-9a3b-d3b21c5bc351",
+      "name": "Google Sheets - get titles",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "rSgu55fikpNzqyzu",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "13M7HBsbRMeclEzaawSrd5znPXBL3VrvaPebIvgX_tAk",
+          "mode": "list",
+          "cachedResultName": "wordpress",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/13M7HBsbRMeclEzaawSrd5znPXBL3VrvaPebIvgX_tAk/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1210533135,
+          "mode": "list",
+          "cachedResultName": "sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/13M7HBsbRMeclEzaawSrd5znPXBL3VrvaPebIvgX_tAk/edit#gid=1210533135"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "status": "done",
+            "title": "={{ $('Google Sheets - get titles').item.json.title }}"
+          },
+          "matchingColumns": [
+            "title"
+          ],
+          "schema": [
+            {
+              "id": "title",
+              "displayName": "title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "subtopics",
+              "displayName": "subtopics",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "note",
+              "displayName": "note",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        620,
+        -120
+      ],
+      "id": "8b491925-9903-4693-8161-a7c32daee3ac",
+      "name": "Google Sheets - update status",
+      "retryOnFail": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "rSgu55fikpNzqyzu",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 10
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -2480,
+        80
+      ],
+      "id": "41234dd6-ab9e-4418-ba31-0cb9b1fc3204",
+      "name": "Schedule Trigger",
+      "notesInFlow": true
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        -628,
+        -120
+      ],
+      "id": "b4e77287-4b5a-4e98-8388-5d1bfaf8729d",
+      "name": "Aggregate"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o-search-preview",
+          "mode": "id"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "={{ $('set global params').item.json['prompt - search viewpoints'] }}",
+              "role": "system"
+            },
+            {
+              "content": "=Topic:\n{{ $json['title'] }}\n\nSubtopics:\n{{ $json['subtopics'] }}"
+            }
+          ]
+        },
+        "simplify": false,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        -1820,
+        80
+      ],
+      "id": "bff081cc-3840-423d-89aa-f5a9b6d13024",
+      "name": "search viewpoints",
+      "retryOnFail": true,
+      "waitBetweenTries": 3000,
+      "credentials": {
+        "openAiApi": {
+          "id": "QRV7JBStLSxezKZB",
+          "name": "OpenAi account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "message.content.images",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        -1068,
+        80
+      ],
+      "id": "01fca40c-7c5a-4183-8726-00cf855a2203",
+      "name": "Split Out"
+    },
+    {
+      "parameters": {
+        "resource": "image",
+        "prompt": "={{ $json.image_prompt }}",
+        "options": {
+          "size": "1792x1024"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        -628,
+        80
+      ],
+      "id": "0c883602-19ec-4f3d-ae6b-3518f94c958d",
+      "name": "OpenAI",
+      "retryOnFail": true,
+      "waitBetweenTries": 3000,
+      "credentials": {
+        "openAiApi": {
+          "id": "QRV7JBStLSxezKZB",
+          "name": "OpenAi account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://{{ $('set global params').item.json.wordpress_baseurl }}/wp-json/wp/v2/media",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "wordpressApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "content-disposition",
+              "value": "=attachment;filename={{ $('Loop Over Items').item.json.image_title.replace(/\\s/g, \"_\")\n }}.{{ $binary.data.fileExtension }}"
+            },
+            {
+              "name": "content-type",
+              "value": "={{ $binary.data.mimeType }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "binaryData",
+        "inputDataFieldName": "data",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -408,
+        80
+      ],
+      "id": "afeb5ef9-72aa-4410-813d-c11f5b8e69fe",
+      "name": "upload image",
+      "retryOnFail": true,
+      "waitBetweenTries": 3000,
+      "credentials": {
+        "wordpressApi": {
+          "id": "Ma0euD39kLMaSxMd",
+          "name": "Wordpress account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const full_blog_content = $('generate content').first().json.message.content.fullBlogContent;\nconst title = $('Google Sheets - get titles').first().json['title'];\nconst images = $input.first().json.data;\n\nlet fullMarkdownContent = full_blog_content;\n\nimages.forEach((item, idx) => {\n  const placeholder = `<PLACE YOUR IMAGE[${idx + 1}] LINK>`;\n  fullMarkdownContent = fullMarkdownContent.replace(placeholder, item.source_url);\n});\n\nreturn {\n  json: {\n    title: title,\n    full_blog_content: fullMarkdownContent,\n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -408,
+        -120
+      ],
+      "id": "6aedf7bc-3b3d-4c62-a1c4-f7d1cabd7c95",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "title": "={{ $json.title }}",
+        "additionalFields": {
+          "content": "={{ $json.full_blog_content }}",
+          "status": "draft"
+        }
+      },
+      "type": "n8n-nodes-base.wordpress",
+      "typeVersion": 1,
+      "position": [
+        408,
+        -120
+      ],
+      "id": "8a2a3a10-5d5c-47ef-810b-724fae4eb1ea",
+      "name": "Wordpress",
+      "retryOnFail": true,
+      "waitBetweenTries": 3000,
+      "credentials": {
+        "wordpressApi": {
+          "id": "Ma0euD39kLMaSxMd",
+          "name": "Wordpress account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "0e5a4af7-7849-447d-bd07-87293221ce29",
+              "name": "source_url",
+              "value": "={{ $json.link }}",
+              "type": "string"
+            },
+            {
+              "id": "7598b5b5-9e0a-4c72-bda8-daf8be0ce31c",
+              "name": "image_desc",
+              "value": "={{ $('Loop Over Items').item.json.image_desc }}",
+              "type": "string"
+            },
+            {
+              "id": "f7cefa14-7179-4ab2-b365-71bae3818e11",
+              "name": "image_title",
+              "value": "={{ $('Loop Over Items').item.json.image_title }} ",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        188,
+        155
+      ],
+      "id": "982cc95b-62f4-4c46-a16e-f2732933be70",
+      "name": "set - sub content"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o-mini-search-preview",
+          "mode": "id"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "={{ $('set global params').item.json['prompt - add footnotes'] }}",
+              "role": "system"
+            },
+            {
+              "content": "={{ $json.full_blog_content }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        -180,
+        -120
+      ],
+      "id": "9bf17e09-52a8-4353-9162-1048e9f4edd7",
+      "name": "add footnotes",
+      "retryOnFail": true,
+      "waitBetweenTries": 3000,
+      "credentials": {
+        "openAiApi": {
+          "id": "QRV7JBStLSxezKZB",
+          "name": "OpenAi account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const inputText = $input.first().json.message.content;\n\nconst jsonStartIndex = inputText.indexOf('```json\\n{');\nconst jsonEndIndex = inputText.indexOf('}\\n```');\n\nlet mainBodyJson = {};\nlet footnotesText = '';\n\nif (jsonStartIndex !== -1 && jsonEndIndex !== -1) {\n  const jsonString = inputText.substring(jsonStartIndex + '```json\\n'.length, jsonEndIndex + 1);\n  const parsedJson = JSON.parse(jsonString);\n  mainBodyJson = parsedJson.main_body || {};\n  footnotesText = parsedJson.footnotes || '';\n}\n\nlet articleContent = $('Code').first().json.full_blog_content\n\nfor (const term in mainBodyJson) {\n  if (Object.hasOwnProperty.call(mainBodyJson, term)) {\n    articleContent = articleContent.replace(term, mainBodyJson[term]);\n  }\n}\n\nlet fullArticle = articleContent;\nif (footnotesText) {\n  fullArticle += '\\n\\n---\\n\\n' + footnotesText;\n}\n\nreturn [{\n  json: {\n    title: $('Code').first().json.title,\n    full_blog_content: fullArticle\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        188,
+        -120
+      ],
+      "id": "c9ec280e-d1f8-4ad5-96fa-3b16bb33cbea",
+      "name": "Code - add footnotes"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://{{ $('set global params').item.json.wordpress_baseurl }}/wp-json/wp/v2/media/{{ $json.id }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "wordpressApi",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "title",
+              "value": "={{ $('Loop Over Items').item.json.image_title }}"
+            },
+            {
+              "name": "alt_text",
+              "value": "={{ $('Loop Over Items').item.json.image_desc }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -110,
+        80
+      ],
+      "id": "4d317e0b-4414-426e-ba30-f4b1334bb01d",
+      "name": "update image args",
+      "retryOnFail": true,
+      "waitBetweenTries": 3000,
+      "credentials": {
+        "wordpressApi": {
+          "id": "Ma0euD39kLMaSxMd",
+          "name": "Wordpress account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "GPT-4.1",
+          "mode": "id"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "={{ $('set global params').item.json['prompt - content'] }}",
+              "role": "system"
+            },
+            {
+              "content": "=## Title: \n{{ $('Google Sheets - get titles').item.json['title'] }}\n\n## Subheadings:\n{{ $('Google Sheets - get titles').item.json['subtopics'] }}\n\n## Viewpoints:\n{{ $json.choices[0].message.content }}"
+            }
+          ]
+        },
+        "jsonOutput": true,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        -1444,
+        80
+      ],
+      "id": "a354923c-9b6d-4e2d-aad7-3a08056f8b9a",
+      "name": "generate content",
+      "retryOnFail": true,
+      "waitBetweenTries": 3000,
+      "credentials": {
+        "openAiApi": {
+          "id": "QRV7JBStLSxezKZB",
+          "name": "OpenAi account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "# 🛠 Global Config:\n### 1. You need to set **wordpress_baseurl** to your actual website URL in node 'set global params'.\n\n### 2. Feel free to tweak the AI prompts to suit your brand/style — just keep the output format consistent so downstream steps don’t break.\n\n### 3. Connect your Google Sheet, and make sure it has at least these columns: title, status, note.\n\n# ✨ How It Works\nAn end-to-end, AI-powered content pipeline. You just enter blog titles in a Google Sheet — the workflow does the rest:\n\n\t•\t🔁  **Scheduled Trigger**: Checks your sheet daily for new tasks.\n\n\t•\t🔍  **AI Research**: For each “todo” title, it uses search-based AI to gather insights like a market analyst.\n\n\t•\t✍️  **Content & Image Generation**:\n\tCustom GPT ghostwriter crafts SEO-optimized articles (PAS model, brand voice, user personas).\n\tAuto-generates image prompts → creates matching visuals.\n\n\t•\t📤  **Smart Upload & Formatting**:\n\tUploads images to your WordPress media library with ALT text.\n\t•\tAuto-embeds them into article sections.\n\n\t•\t📚  **Professional Touch**:\n\tAI adds footnotes and links to authoritative sources.\n\n\t•\t🚀  **Publish & Feedback**:\n\tPublishes as draft in WordPress.\n\tUpdates Google Sheet with status and post link.",
+        "height": 820,
+        "width": 540,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -3060,
+        -320
+      ],
+      "id": "9c5331a8-9451-4263-bdf0-0edb50e6017d",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "4b1ba6db-1345-43af-ac9f-bc89c8376f6d",
+              "name": "wordpress_baseurl",
+              "value": "=",
+              "type": "string"
+            },
+            {
+              "id": "5d8f2b0d-f1e7-4d8a-9211-1212bde0e8e5",
+              "name": "prompt - search viewpoints",
+              "value": "=# Role: Industry Research Analyst\n\nYou are an industry research analyst. Your task is to comprehensively search and investigate the given topic and subtopics.\n\n# Output\nPresent your findings as a clear and structured list of the most important and relevant information on this topic.",
+              "type": "string"
+            },
+            {
+              "id": "1ec96e0a-4c66-4b57-a3f4-3a5a0217ca54",
+              "name": "prompt - content",
+              "value": "=## your Role\nYou are a ghost writer of my blog posts and you will complete blog posts in the specified format using my tone of voice base on the given title, secondary headings(if given) and insights.\n\n## The blog structure\n- The main title of the article, usually ending with a question mark `?`\n- Leading paragraph:The first paragraph, which uses PAS formula to grab the reader's attention (max 30 words).\n- Snippet paragraph:**second paragraph at the beginning, answering the question posed by the title, this paragraph must be HELPFUL to the reader and will be used later to compete for Google's Featured Snippets. (max 50 words)**\n[image placeholder]\n- Transition Paragraph:The paragraph that begins and ends with a paragraph that will keep the customer from reading further.\n\tLOOP START\n\t## Gave a secondary headline that also ends in a question mark `?`\n\tleading paragraph:The first paragraph, which uses the PAS strategy to grab the reader's attention (max 30 words).\n\tsnippet paragraph:The second paragraph, which answers the question posed by the headline, is the paragraph that will be used later to compete for Google's Featured Snippets. (max 50 words)\n\t[image placeholder]\n\tDive deeper Paragraph:Based on the secondary headings, continue to extend and go deeper, can use critical thinking, to break down the question, to help the reader understand more deeply, need to use the tertiary headings, and Markdown formatting tables to express the ideas in a more structured way. (around 150 words)\n\tLOOP END\n- Conclusion: Write a conclusion that summarizes the entire text (max 30 words).\n\n## The rules of writting\n1. the length of the article must not be less than 800 words, and each Dive Deeper paragraph of the article must not be less than 150 words;\n2. the default output is in English;\n3. be written in the first person throughout, with personal stories added as necessary.\n4. write in a style that is somewhere between written academic writing and spoken description, with all sentences having a subject, no long, complex sentences, and short sentences whenever possible, replacing non-everyday vocabulary.\n5. replace transition words and connectors in all sentences with the most basic, commonly used words, try simple, direct expressions wherever possible, and avoid complex or out-of-the-way vocabulary. Ensure that the logical relationship of the sentences is clear and do not add any summaries voluntarily (except for the conslusion part at the end of the essay)\n\n\n## Format Content\n1. The title and secondary headings can only be given to you by me. Do not expand them. Each secondary paragraph has exactly one accompanying image.\n2. Insert the image placeholder in the format `![Image Description](<PLACE YOUR IMAGE[1] LINK> \"Image Title\")` into a suitable location in the Markdown text (e.g., after an introductory paragraph).\n3. Write the `Image Description` and `Image Title` based on the corresponding subheading.\n4.  **Assemble Output**: Place the `images` and the final Markdown text into the specified JSON structure to complete the output.\n\n\n## OutputFormat\nYou must strictly output in the following JSON structure. Do not include any additional explanations, comments, or text before or after the JSON code block.\n\n{\n  \"fullBlogContent\": \"The generated, WordPress-compliant Markdown content, including the custom image placeholder, goes here\", \n  \"images\": [\n    {\"image_title\":\"The title of the first image\", \"image_desc\": \"The description of the first image\", \"image_prompt\": \"The detailed English prompt for the AI art generator goes here\"}, \n    {\"image_title\":\"The title of the second image\", \"image_desc\": \"The description of the second image\", \"image_prompt\": \"The detailed English prompt for the AI art generator goes here\"},\n    {\"image_title\":\"...\", \"image_desc\": \"...\", \"image_prompt\": \"The detailed English prompt for the AI art generator goes here\"},\n    {\"image_title\":\"...\", \"image_desc\": \"...\", \"image_prompt\": \"The detailed English prompt for the AI art generator goes here\"}\n  ]\n}",
+              "type": "string"
+            },
+            {
+              "id": "3c955750-c2dc-4c81-accf-84f9aced7efa",
+              "name": "prompt - add footnotes",
+              "value": "=# Role: Wordpress Markdown Footnote Assistant\n\n## Profile\n- language: English\n- description: Assists users in analyzing WordPress Markdown articles, intelligently identifying less common nouns, and automatically adding authoritative, referential, and influential **external link** footnotes with concise explanations. The final output strictly adheres to a specified JSON format, containing both the processed main body and the footnote content.\n\n## Skills\n- Deep understanding of WordPress Markdown format parsing and generation.\n- Proficient in efficiently identifying **less common professional terms or concepts** within articles.\n- Skilled in web searching, capable of **filtering and evaluating the authority, reference value, and influence of external links**.\n- Able to **concisely craft clear and understandable footnote explanations** based on context and search results.\n- Strict adherence to specified footnote **Markdown format and JSON output structure**.\n\n## Background:\nUsers need to enhance the professionalism and readability of their WordPress articles by adding explanatory footnotes for less common nouns. These footnotes must include external links, and the linked sources need to possess high authority and reference value. Users have strict requirements for the final output format, expecting a structured JSON object containing both the main body and the footnotes.\n\n## Goals:\n1. From the user-provided WordPress Markdown article, **accurately identify and add approximately 10 footnotes for less common nouns** (the number can be flexibly adjusted based on article content).\n2. **All footnote links must point to authoritative, referential, and influential external websites**.\n3. **Footnote explanations must be concise and easy to understand**.\n4. **The final output must strictly follow the specified JSON format**.\n\n## Rules\n1. **Only add footnotes for \"less common\" nouns in the article**, aiming for **8-12 footnotes**, prioritizing around 10. If the article content is limited, adjust the number of footnotes accordingly.\n2. **Footnote links must originate from authoritative, referential, and influential websites** found through search, avoiding unofficial, unprofessional, or low-quality links.\n3. **Footnote explanation content must be concise, accurate, and easy to understand**, of appropriate length, and non-redundant.\n4. **Strictly adhere to the JSON structure and internal Markdown footnote format** defined in `OutputFormat`.\n    - **In-text citation format**: `[Term to be explained][^n](link_from_the_search)`\n    - **Bottom footnote definition format**: `[^n]: Explore this link to understand how thermally systems enhance energy efficiency and comfort in buildings.`\n5. **Do not modify any other original content of the article** (including punctuation, original formatting, etc.) besides adding footnotes.\n6. **Footnote numbers must start from `[^1]` and increment sequentially**.\n\n## Workflows\n1. **Receive and Parse:** Receive the user-provided WordPress Markdown formatted article and perform initial parsing.\n2. **Intelligent Noun Identification:** Comprehensively analyze the article content, **intelligently identifying approximately 10 less common nouns or concepts most suitable for footnotes**, leveraging word frequency, contextual relevance, and domain knowledge.\n3. **Authoritative Link Search and Filtering:** For each identified noun, conduct an in-depth web search, **specifically filtering and determining the most authoritative, referential, and influential external website to serve as the footnote link source**.\n4. **Footnote Content Generation:** Based on the selected external link content and the meaning of the noun itself, **concisely write clear and understandable footnote explanations**.\n\n## OutputFormat\nThe output will be a strict JSON object, where `main_body` is a key-value pair object (key is the original term to be explained, value is the string with the footnote marker inserted), and `footnotes` is a string containing all footnote definitions, with each footnote separated by two newline characters (`\\n\\n`).\n```json\n{\n    \"main_body\": {\n        \"Term to be explained 1\": \"[Term to be explained 1][^1](link_from_the_search)\",\n        \"Term to be explained 2\": \"[Term to be explained 2][^2](link_from_the_search)\",\n        ...\n    },\n    \"footnotes\": \"[^1]: Explore this link to understand how thermally systems enhance energy efficiency and comfort in buildings.\\n\\n[^2]: Learn about Low-E glass to see how it improves insulation and reduces energy costs in your home or building.\",\n    ...\n}\n```\n",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -2260,
+        80
+      ],
+      "id": "518ae9ef-b1ec-4943-83c4-b247d3e08c63",
+      "name": "set global params"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Loop Over Items": {
+      "main": [
+        [
+          {
+            "node": "Aggregate",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "OpenAI",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets - get titles": {
+      "main": [
+        [
+          {
+            "node": "search viewpoints",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "set global params",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "search viewpoints": {
+      "main": [
+        [
+          {
+            "node": "generate content",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI": {
+      "main": [
+        [
+          {
+            "node": "upload image",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "upload image": {
+      "main": [
+        [
+          {
+            "node": "update image args",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "add footnotes",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wordpress": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets - update status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "set - sub content": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "add footnotes": {
+      "main": [
+        [
+          {
+            "node": "Code - add footnotes",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code - add footnotes": {
+      "main": [
+        [
+          {
+            "node": "Wordpress",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "update image args": {
+      "main": [
+        [
+          {
+            "node": "set - sub content",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "generate content": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "set global params": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets - get titles",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "3d37e68e-5700-47c0-adb5-f6c440ac22f4",
+  "meta": {
+    "instanceId": "a6636caeecb595c968d224f4e8ee388fffbd8baa02300d22672f03e085e73526"
+  },
+  "id": "dGQ2E3r2VW1pf57l",
+  "tags": []
+}
